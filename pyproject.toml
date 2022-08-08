@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "mnist_gan"
+version = "0.1.0"
+description = ""
+authors = ["Youngbeom Choi <helloybz@gmail.com>"]
+readme = "README.rst"
+packages = [{include = "mnist_gan"}]
+
+[tool.poetry.scripts]
+mnist_gan = 'mnist_gan.__main__:main'
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pytorch-lightning = "^1.6.5"
+torchvision = "^0.13.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+autopep8 = "^1.6.0"
+tensorboard = "^2.9.1"
+torch-tb-profiler = "^0.4.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.autopep8]
+max_line_length = 200
+ignore = "E501"
+in-place = true
+recursive = true
+aggressive = 3
