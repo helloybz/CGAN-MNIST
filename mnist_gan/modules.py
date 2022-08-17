@@ -60,7 +60,7 @@ class Generator(nn.Module):
 
         return x
 
-    def sample_noise(self, batch_size) -> torch.Tensor:
+    def sample_noise(self, batch_size=1) -> torch.Tensor:
         z = self.noise_distribution.sample(torch.Size([batch_size, self.num_dimensions_z]))
         return z
 
@@ -143,6 +143,17 @@ class GAN(pl.LightningModule):
 
         self.lr = lr
 
+    def forward(self):
+        z = self.generator.sample_noise()
+        z = z.expand((10, z.size(-1)))
+        condition_vector = torch.eye(10)
+        generated = self.generator(
+            z,
+            condition_vector,
+        )
+        
+        return generated
+        
     def training_step(self, batch, batch_idx, optimizer_idx):
         x, label = batch
         x = x.flatten(1)
@@ -239,3 +250,4 @@ class GAN(pl.LightningModule):
     def add_argparse_args(parser: ArgumentParser) -> ArgumentParser:
         model_parser = parser.add_argument_group("Model")
         return parser
+        
