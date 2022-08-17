@@ -11,6 +11,9 @@ from mnist_gan.types import *
 
 
 class MNISTDataModule(pl.LightningDataModule):
+    MNIST_STD = 0.3081
+    MNIST_MEAN = 0.1037
+
     def __init__(
         self,
         data_dir,
@@ -29,7 +32,7 @@ class MNISTDataModule(pl.LightningDataModule):
         self.num_workers = num_workers
         self.transforms = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,)),
+            transforms.Normalize((self.MNIST_MEAN,), (self.MNIST_STD,)),
         ])
         self.target_transform = torch.nn.functional.one_hot
 
@@ -95,3 +98,11 @@ class MNISTDataModule(pl.LightningDataModule):
         data_parser.add_argument('--batch_size', type=int, default=32)
         data_parser.add_argument('--num_workers', type=int, default=0)
         return parser
+
+    @classmethod
+    def to_image(cls, tensors):
+        tensors = tensors * cls.MNIST_STD + cls.MNIST_MEAN 
+        tensors = tensors.view(-1, 28, 28)
+        images = [transforms.ToPILImage()(tensor) for tensor in tensors]
+
+        return images
